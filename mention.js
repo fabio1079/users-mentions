@@ -9,35 +9,46 @@
 
 
   UserMentions.prototype.keyupEvent = function keyupEvent(evt) {
-    var hasMention = this.searchForMention();
+    var hasMention = this.verifyIfHasMention();
 
-    console.log(hasMention);
+    if (hasMention) {
+      console.log(this.getCurrentMention());
+    }
   }
 
 
-  UserMentions.prototype.searchForMention = function searchForMention() {
+  UserMentions.prototype.verifyIfHasMention = function verifyIfHasMention() {
     var found = false;
-    var currentText = this.$field.val();
-    var cursorPosition = this.$field.prop("selectionStart");
-    var triggerPosition = currentText.lastIndexOf(this.settup.triggerChar, cursorPosition);
+    var searchRegex = new RegExp(this.settup.searchPattern, 'g');
+    var possibleMention = this.getCurrentMention();
 
-    // if there is a trigger and cursor is on valid position
-    if (triggerPosition !== -1 && (currentText.charAt(cursorPosition-1) !== ' ')) {
-      var possibleMention = currentText.slice(triggerPosition+1, cursorPosition);
-      var searchRegex = new RegExp(this.settup.searchPattern, 'g');
-
-      if (possibleMention.length >= this.settup.lengthStartSearch) {
-        found = searchRegex.test(possibleMention);
-      }
+    if (possibleMention.length >= this.settup.lengthStartSearch) {
+      found = searchRegex.test(possibleMention);
     }
 
     return found;
   }
 
+
+  UserMentions.prototype.getCurrentMention = function getCurrentMention() {
+    var currentText = this.$field.val();
+    var cursorPosition = this.$field.prop("selectionStart");
+    var triggerPosition = currentText.lastIndexOf(this.settup.triggerChar, cursorPosition);
+    var currentMention = "";
+
+    // if there is a trigger and cursor is on valid position
+    if (triggerPosition !== -1 && (currentText.charAt(cursorPosition-1) !== ' ')) {
+      currentMention = currentText.slice(triggerPosition+1, cursorPosition);
+    }
+
+    return currentMention;
+  }
+
+
   $.fn.userMentions = function userMentions(settup) {
     _.defaults(settup, {
       source: [],
-      searchPattern: "([a-z]|-)+", // by default it uses the slug pattern, EX: Hey @mary-jane look here !
+      searchPattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$", // by default it uses the slug pattern, EX: Hey @mary-jane look here !
       triggerChar: '@',
       lengthStartSearch: 3
     });
