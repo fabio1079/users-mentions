@@ -14,7 +14,16 @@
 <textarea id="comments" name="comments" cols="30" rows="10"></textarea>
 
 <script>
-  window.addEventListener('DOMContentLoaded', () => {
+  $(document).ready(function() {
+    var fakeData = [
+      {name: 'Fulano da Silva', slug: 'fulano'},
+      {name: 'Ciclano Moura', slug: 'ciclano'},
+      {name: 'Deltrano Cunha', slug: 'deltrano'},
+    ];
+
+    $("#comments").userMentions({
+      source: fakeData,
+    });
   });
 </script>
 
