@@ -16,13 +16,17 @@
 <script>
   $(document).ready(function() {
     var fakeData = [
-      {name: 'Fulano da Silva', slug: 'fulano'},
-      {name: 'Ciclano Moura', slug: 'ciclano'},
-      {name: 'Deltrano Cunha', slug: 'deltrano'},
+      {name: 'Fulano da Silva', slug: 'fulano-da-silva'},
+      {name: 'Ciclano Moura', slug: 'ciclano-moura'},
+      {name: 'Deltrano Cunha', slug: 'deltrano-cunha'},
     ];
 
     $("#comments").userMentions({
-      source: fakeData,
+      getMentionsData: function(mention, callback) {
+        console.log("Searching for: " + mention);
+
+        callback(fakeData);
+      }
     });
   });
 </script>
