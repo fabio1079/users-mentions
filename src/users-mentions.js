@@ -77,6 +77,8 @@
     var listTemplate = this.buildTemplates();
 
     this.$field.after(listTemplate);
+    this.$field.off('keyup');
+    this.$field.on('keyup', this.fieldKeyUpEvent.bind(this));
   }
 
 
@@ -90,6 +92,21 @@
     });
 
     return containerTemplate;
+  }
+
+
+  UserMentions.prototype.fieldKeyUpEvent = function fieldKeyUpEvent(evt) {
+    if (evt.keyCode === 40 || evt.keyCode === 38) {
+      this.$field.blur();
+
+      window.removeEventListener('keyup', this.listKeyUpEvent.bind(this));
+      window.addEventListener('keyup', this.listKeyUpEvent.bind(this));
+    }
+  }
+
+
+  UserMentions.prototype.listKeyUpEvent = function listKeyUpEvent(evt) {
+    
   }
 
 
