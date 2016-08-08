@@ -1,0 +1,25 @@
+{
+  "name": "users-mentions",
+  "main": "src/users-mentions.js",
+  "homepage": "https://github.com/fabio1079/users-mentions",
+  "authors": [
+    "Fabio Teixeira <fabio1079@gmail.com>"
+  ],
+  "description": "A Facebook like mention system",
+  "keywords": [
+    "users",
+    "mentions"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "lodash": "^4.14.2",
+    "jquery": "^3.1.0"
+  }
+}
