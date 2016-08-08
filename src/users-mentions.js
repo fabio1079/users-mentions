@@ -9,9 +9,11 @@
 
 
   function UserMentions(settup, $field) {
+    this.$wrapper = $("<div class='user-mention-wrapper'></div>");
     this.settup = settup;
     this.$field = $field;
 
+    this.$field.wrap(this.$wrapper);
     this.$field.on('input', this.userInputEvent.bind(this));
   }
 
