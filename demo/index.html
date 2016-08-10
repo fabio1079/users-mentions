@@ -6,32 +6,15 @@
 
   <link type="text/css" rel="stylesheet" href="/users-mentions.css" />
 
-  <script src="/jquery.min.js"></script>
   <script src="/lodash.min.js"></script>
   <script src="/users-mentions.js"></script>
 
 </head>
 <body>
 
-<textarea id="comments" name="comments" cols="30" rows="10"></textarea>
-
-<script>
-  $(document).ready(function() {
-    var fakeData = [
-      {name: 'Fulano da Silva', slug: 'fulano-da-silva'},
-      {name: 'Ciclano Moura', slug: 'ciclano-moura'},
-      {name: 'Deltrano Cunha', slug: 'deltrano-cunha'},
-    ];
-
-    $("#comments").userMentions({
-      getMentionsData: function(mention, callback) {
-        console.log("Searching for: " + mention);
-
-        callback(fakeData);
-      }
-    });
-  });
-</script>
-
+<textarea id="comments" name="comments"
+          cols="30" rows="10"
+          data-users-mention-field
+          data-request-url="/users-search"></textarea>
 </body>
 </html>

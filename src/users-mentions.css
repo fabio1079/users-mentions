@@ -1,23 +1,23 @@
-.user-mention-wrapper {
+.users-mention-wrapper {
   display: inline-block;
 }
 
-.user-mention-list {
+.users-mention-list {
   background-color: #F0F0F0;
   display: block;
 }
 
-.user-mention-list ul {
+.users-mention-list ul {
   padding: 0px;
   margin: 0px;
 }
 
-.user-mention-list li {
+.users-mention-list li {
   list-style: none;
   padding: 5px;
   border-bottom: solid 1px #D9D9D9;
 }
 
-.user-mention-list li:hover {
+.users-mention-list li:hover {
   background-color: #D9D9D9;
 }
