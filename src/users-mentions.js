@@ -96,8 +96,8 @@
 
   UserMentions.prototype.searchForMentions = function searchForMentions(currentMention) {
     var xhr = new XMLHttpRequest();
-    var requestUrl = this.settup.requestUrl;
     var params = "mention=" + encodeURIComponent(currentMention);
+    var requestUrl = this.settup.requestUrl + "?" + params;
     var currentInstance = this;
 
     if (/^\/.*$/.test(requestUrl)) {
@@ -105,7 +105,7 @@
       requestUrl = currentLocation + requestUrl;
     }
 
-    xhr.open("GET", requestUrl);
+    xhr.open("GET", requestUrl, true);
     xhr.onreadystatechange = function onreadystatechange() {
       if (xhr.readyState === xhr.DONE && xhr.status === 200) {
         var response = JSON.parse(xhr.responseText);
@@ -115,8 +115,6 @@
 
 
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.setRequestHeader('Content-length', params.length);
     xhr.send(params);
   }
 
