@@ -43,7 +43,7 @@
           `
             <ul>
             <% _.forEach(rc.userList, function(user) { %>
-              <li>
+              <li data-slug='<%= user.slug %>'>
                 <%= user.slug %>
                 <small><%= user.name %></small>
               </li>
@@ -135,17 +135,24 @@
 
 
   UserMentions.prototype.displayUserSelection = function displayUserSelection() {
-    if (this.usersListDIV) {
-      this.wrapper.removeChild(this.usersListDIV);
-    }
-
     var listTemplate = this.buildTemplates();
 
-    //this.field.after(listTemplate);
+    this.removeUsersListDiv();
     this.field.insertAdjacentHTML("afterend", listTemplate);
     this.usersListDIV = this.wrapper.querySelector(".users-mention-list");
 
     this.field.onkeyup = this.fieldKeyUpEvent.bind(this);
+
+    var usersListUL = this.usersListDIV.querySelector("ul");
+    usersListUL.onclick = this.usersListUlOnClickEvent.bind(this);
+  }
+
+
+  UserMentions.prototype.removeUsersListDiv = function removeUsersListDiv() {
+    if (this.usersListDIV) {
+      this.wrapper.removeChild(this.usersListDIV);
+      this.usersListDIV = null;
+    }
   }
 
 
@@ -198,10 +205,27 @@
   UserMentions.prototype.usersListSelectOnKeyPress = function usersListSelectOnKeyPress(evt) {
     // 13 -> Enter
     if (evt.keyCode === 13) {
-      var value = evt.target.value;
-      this.wrapper.removeChild(this.usersListDIV);
-      console.log("Selected: " + value);
+      this.chooseMention(evt.target.value);
     }
+  }
+
+
+  UserMentions.prototype.usersListUlOnClickEvent = function usersListUlOnClickEvent(evt) {
+    var clickedItem = evt.target;
+
+    if (clickedItem.tagName !== "LI") {
+      clickedItem = clickedItem.parentNode;
+    }
+
+    var slug = clickedItem.getAttribute("data-slug");
+
+    this.chooseMention(slug);
+  }
+
+
+  UserMentions.prototype.chooseMention = function chooseMention(mention) {
+    this.removeUsersListDiv();
+    console.log("Selected: " + mention);
   }
 
 
