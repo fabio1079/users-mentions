@@ -25,19 +25,6 @@
 
 
   UserMentions.prototype.prepareSettup = function prepareSettup(settup) {
-    /*
-    if (typeof(settup) !== "object") {
-      settup = {};
-    }
-
-    settup.userList = settup.userList || [];
-    settup.getMentionsData = settup.getMentionsData || null;
-    // by default it uses the slug pattern, EX: Hey @mary-jane look here !
-    settup.searchPattern = settup.searchPattern || "^[a-z0-9]+(?:-[a-z0-9]+)*$";
-    settup.triggerChar = settup.triggerChar || '@';
-    settup.lengthStartSearch = settup.lengthStartSearch || 3;
-    settup.templates
-*/
     _.defaults(settup, {
       requestUrl: "",
       userList: [],
@@ -46,10 +33,31 @@
       triggerChar: '@',
       lengthStartSearch: 3,
       templates: {
-        container: _.template("<div class='users-mention-list'><%= rc.userListTemplate %></div>"),
-        userList: _.template("<ul><% _.forEach(rc.userList, function(user) { %>" +
-                                "<li><%= user.slug %></li>" +
-                             "<% }); %></ul>")
+        container: _.template(
+          `
+            <div class='users-mention-list'>
+              <%= rc.userListTemplate %>
+            </div>
+          `),
+        userList: _.template(
+          `
+            <ul>
+            <% _.forEach(rc.userList, function(user) { %>
+              <li>
+                <%= user.slug %>
+                <small><%= user.name %></small>
+              </li>
+            <% }); %>
+            </ul>
+
+            <select id='users-mention-list-select'>
+              <% _.forEach(rc.userList, (user) => { %>
+                <option value='<%= user.slug %>'>
+                  <%= user.slug %>
+                </option>
+              <% }); %>
+            </select>
+          `)
       }
     });
 
@@ -127,19 +135,17 @@
 
 
   UserMentions.prototype.displayUserSelection = function displayUserSelection() {
-    var userMentionList = this.wrapper.querySelector(".users-mention-list");
-
-    if (userMentionList) {
-      this.wrapper.removeChild(userMentionList);
+    if (this.usersListDIV) {
+      this.wrapper.removeChild(this.usersListDIV);
     }
 
     var listTemplate = this.buildTemplates();
 
     //this.field.after(listTemplate);
     this.field.insertAdjacentHTML("afterend", listTemplate);
+    this.usersListDIV = this.wrapper.querySelector(".users-mention-list");
 
-    this.field.removeEventListener("keyup", this.fieldKeyUpEvent.bind(this));
-    this.field.addEventListener("keyup", this.fieldKeyUpEvent.bind(this));
+    this.field.onkeyup = this.fieldKeyUpEvent.bind(this);
   }
 
 
@@ -157,17 +163,45 @@
 
 
   UserMentions.prototype.fieldKeyUpEvent = function fieldKeyUpEvent(evt) {
+    // down 40, up 38
     if (evt.keyCode === 40 || evt.keyCode === 38) {
-      this.$field.blur();
+      this.field.blur();
 
-      window.removeEventListener('keyup', this.listKeyUpEvent.bind(this));
-      window.addEventListener('keyup', this.listKeyUpEvent.bind(this));
+      var usersListSelect = this.usersListDIV.querySelector("select");
+      usersListSelect.focus();
+      usersListSelect.selectedIndex = 0;
+      usersListSelect.onchange = this.usersListSelectChangeEvent.bind(this);
+      usersListSelect.onkeypress = this.usersListSelectOnKeyPress.bind(this);
+
+      var usersListFristLI = this.usersListDIV.querySelector("ul li");
+      usersListFristLI.className = "selected";
     }
   }
 
 
-  UserMentions.prototype.listKeyUpEvent = function listKeyUpEvent(evt) {
-    console.log(evt);
+  UserMentions.prototype.usersListSelectChangeEvent = function usersListSelectChangeEvent(evt) {
+    var searchRegex = new RegExp(evt.target.value);
+    var usersListLI = this.usersListDIV.querySelectorAll("ul li");
+    var currentSelectedLI = this.usersListDIV.querySelectorAll("ul li.selected");
+
+    [].forEach.call(currentSelectedLI, li => li.className = "");
+
+    var itens = [].filter.call(usersListLI, (li) => searchRegex.test(li.textContent));
+
+    if (itens.length) {
+      var li = itens[0];
+      li.className = "selected";
+    }
+  }
+
+
+  UserMentions.prototype.usersListSelectOnKeyPress = function usersListSelectOnKeyPress(evt) {
+    // 13 -> Enter
+    if (evt.keyCode === 13) {
+      var value = evt.target.value;
+      this.wrapper.removeChild(this.usersListDIV);
+      console.log("Selected: " + value);
+    }
   }
 
 
