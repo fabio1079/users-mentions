@@ -229,8 +229,8 @@
 
     chooseMention(mention) {
       this.removeUsersListDiv();
-      console.log("Selected: " + mention, this.currentMention);
-      this.field.value = this.field.value.replace("@"+this.currentMention, "@"+mention);
+      let replaceRegex = new RegExp(`(@${this.currentMention} )|(@${this.currentMention}$)`, "g");
+      this.field.value = this.field.value.replace(replaceRegex, `@${mention} `);
       this.field.focus();
     }
   }
@@ -251,7 +251,7 @@
         settup[name] = value;
       });
 
-      let userMentions = new UserMentions(settup, el);
+      new UserMentions(settup, el);
     });
   }, false);
 
