@@ -1,0 +1,33 @@
+{
+  "name": "mention",
+  "version": "1.0.0",
+  "description": "A simple facebook like user mention system",
+  "main": "src/users-mentions.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run babel && npm run uglifyjs",
+    "babel": "babel src -d dist",
+    "uglifyjs": "uglifyjs --compress --mangle -- dist/users-mentions.js > dist/users-mentions.min.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fabio1079/users-mentions.git"
+  },
+  "keywords": [
+    "user",
+    "mention"
+  ],
+  "author": "Fabio Teixeira <fabio1079@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fabio1079/users-mentions/issues"
+  },
+  "homepage": "https://github.com/fabio1079/users-mentions#readme",
+  "devDependencies": {
+    "babel-cli": "^6.14.0"
+  },
+  "dependencies": {
+    "babel-preset-es2015": "^6.14.0",
+    "uglify-js": "^2.7.3"
+  }
+}

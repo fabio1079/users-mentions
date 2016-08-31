@@ -1,13 +1,14 @@
-(function(_, undefined) {
+"use strict";
+
+(function (_, undefined) {
   "use strict";
 
   _.templateSettings = {
-    evaluate    : /<%([\s\S]+?)%>/g,
-    interpolate : /<%=([\s\S]+?)%>/g,
-    escape      : /<%-([\s\S]+?)%>/g,
-    variable    : "rc"
+    evaluate: /<%([\s\S]+?)%>/g,
+    interpolate: /<%=([\s\S]+?)%>/g,
+    escape: /<%-([\s\S]+?)%>/g,
+    variable: "rc"
   };
-
 
   function UserMentions(settup, field) {
     var wrapper = document.createElement("div");
@@ -23,7 +24,6 @@
     this.field.addEventListener("input", this.userInputEvent.bind(this), false);
   }
 
-
   UserMentions.prototype.prepareSettup = function prepareSettup(settup) {
     _.defaults(settup, {
       requestUrl: "",
@@ -33,37 +33,13 @@
       triggerChar: '@',
       lengthStartSearch: 3,
       templates: {
-        container: _.template(
-          `
-            <div class='users-mention-list'>
-              <%= rc.userListTemplate %>
-            </div>
-          `),
-        userList: _.template(
-          `
-            <ul>
-            <% _.forEach(rc.userList, function(user) { %>
-              <li data-slug='<%= user.slug %>'>
-                <%= user.slug %>
-                <small><%= user.name %></small>
-              </li>
-            <% }); %>
-            </ul>
-
-            <select id='users-mention-list-select'>
-              <% _.forEach(rc.userList, (user) => { %>
-                <option value='<%= user.slug %>'>
-                  <%= user.slug %>
-                </option>
-              <% }); %>
-            </select>
-          `)
+        container: _.template("\n            <div class='users-mention-list'>\n              <%= rc.userListTemplate %>\n            </div>\n          "),
+        userList: _.template("\n            <ul>\n            <% _.forEach(rc.userList, function(user) { %>\n              <li data-slug='<%= user.slug %>'>\n                <%= user.slug %>\n                <small><%= user.name %></small>\n              </li>\n            <% }); %>\n            </ul>\n\n            <select id='users-mention-list-select'>\n              <% _.forEach(rc.userList, (user) => { %>\n                <option value='<%= user.slug %>'>\n                  <%= user.slug %>\n                </option>\n              <% }); %>\n            </select>\n          ")
       }
     });
 
     return settup;
-  }
-
+  };
 
   UserMentions.prototype.userInputEvent = function userInputEvent(evt) {
     var hasMention = this.verifyIfHasMention();
@@ -71,8 +47,7 @@
     if (hasMention) {
       this.searchForMentions(this.getCurrentMention());
     }
-  }
-
+  };
 
   UserMentions.prototype.verifyIfHasMention = function verifyIfHasMention() {
     var found = false;
@@ -84,8 +59,7 @@
     }
 
     return found;
-  }
-
+  };
 
   UserMentions.prototype.getCurrentMention = function getCurrentMention() {
     var currentText = this.field.value;
@@ -94,13 +68,12 @@
     var currentMention = "";
 
     // if there is a trigger and cursor is on valid position
-    if (triggerPosition !== -1 && (currentText.charAt(cursorPosition-1) !== ' ')) {
-      currentMention = currentText.slice(triggerPosition+1, cursorPosition);
+    if (triggerPosition !== -1 && currentText.charAt(cursorPosition - 1) !== ' ') {
+      currentMention = currentText.slice(triggerPosition + 1, cursorPosition);
     }
 
     return currentMention;
-  }
-
+  };
 
   UserMentions.prototype.searchForMentions = function searchForMentions(currentMention) {
     var xhr = new XMLHttpRequest();
@@ -119,20 +92,17 @@
         var response = JSON.parse(xhr.responseText);
         currentInstance.populateUserList(response);
       }
-    }
-
+    };
 
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhr.send(params);
-  }
-
+  };
 
   UserMentions.prototype.populateUserList = function populateUserList(userList) {
     this.settup.userList = userList;
 
     this.displayUserSelection();
-  }
-
+  };
 
   UserMentions.prototype.displayUserSelection = function displayUserSelection() {
     var listTemplate = this.buildTemplates();
@@ -147,16 +117,14 @@
 
     var usersListUL = this.usersListDIV.querySelector("ul");
     usersListUL.onclick = this.usersListUlOnClickEvent.bind(this);
-  }
-
+  };
 
   UserMentions.prototype.removeUsersListDiv = function removeUsersListDiv() {
     if (this.usersListDIV) {
       this.wrapper.removeChild(this.usersListDIV);
       this.usersListDIV = null;
     }
-  }
-
+  };
 
   UserMentions.prototype.buildTemplates = function buildTemplates() {
     var userListTemplate = this.settup.templates.userList({
@@ -168,8 +136,7 @@
     });
 
     return containerTemplate;
-  }
-
+  };
 
   UserMentions.prototype.fieldKeyUpEvent = function fieldKeyUpEvent(evt) {
     // down 40, up 38
@@ -185,32 +152,33 @@
       var usersListFristLI = this.usersListDIV.querySelector("ul li");
       usersListFristLI.className = "selected";
     }
-  }
-
+  };
 
   UserMentions.prototype.usersListSelectChangeEvent = function usersListSelectChangeEvent(evt) {
     var searchRegex = new RegExp(evt.target.value);
     var usersListLI = this.usersListDIV.querySelectorAll("ul li");
     var currentSelectedLI = this.usersListDIV.querySelectorAll("ul li.selected");
 
-    [].forEach.call(currentSelectedLI, li => li.className = "");
+    [].forEach.call(currentSelectedLI, function (li) {
+      return li.className = "";
+    });
 
-    var itens = [].filter.call(usersListLI, (li) => searchRegex.test(li.textContent));
+    var itens = [].filter.call(usersListLI, function (li) {
+      return searchRegex.test(li.textContent);
+    });
 
     if (itens.length) {
       var li = itens[0];
       li.className = "selected";
     }
-  }
-
+  };
 
   UserMentions.prototype.usersListSelectOnKeyPress = function usersListSelectOnKeyPress(evt) {
     // 13 -> Enter
     if (evt.keyCode === 13) {
       this.chooseMention(evt.target.value);
     }
-  }
-
+  };
 
   UserMentions.prototype.usersListUlOnClickEvent = function usersListUlOnClickEvent(evt) {
     var clickedItem = evt.target;
@@ -222,27 +190,30 @@
     var slug = clickedItem.getAttribute("data-slug");
 
     this.chooseMention(slug);
-  }
-
+  };
 
   UserMentions.prototype.chooseMention = function chooseMention(mention) {
     this.removeUsersListDiv();
     console.log("Selected: " + mention, this.currentMention);
-    this.field.value = this.field.value.replace("@"+this.currentMention, "@"+mention);
+    this.field.value = this.field.value.replace("@" + this.currentMention, "@" + mention);
     this.field.focus();
-  }
+  };
 
-
-  document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", function () {
     var elements = document.querySelectorAll("textarea[data-users-mention-field]");
 
-    [].forEach.call(elements, (el) => {
-      var dataAttr = [].filter.call(el.attributes, at => /^data-(?!users-mention)/.test(at.name));
+    [].forEach.call(elements, function (el) {
+      var dataAttr = [].filter.call(el.attributes, function (at) {
+        return (/^data-(?!users-mention)/.test(at.name)
+        );
+      });
 
       var settup = {};
-      dataAttr.forEach((attr) => {
+      dataAttr.forEach(function (attr) {
         var name = attr.name.replace("data-", "");
-        name = name.replace(/-([a-z])/g, (_, firstLetter) => firstLetter.toUpperCase());
+        name = name.replace(/-([a-z])/g, function (_, firstLetter) {
+          return firstLetter.toUpperCase();
+        });
         var value = attr.value;
 
         settup[name] = value;
@@ -251,5 +222,4 @@
       var userMentions = new UserMentions(settup, el);
     });
   }, false);
-
-}) (_.runInContext());
+})(_.runInContext());

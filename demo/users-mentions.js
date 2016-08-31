@@ -1,1 +1,1 @@
-../src/users-mentions.js
+../dist/users-mentions.js
