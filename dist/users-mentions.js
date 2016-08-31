@@ -216,8 +216,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       key: "chooseMention",
       value: function chooseMention(mention) {
         this.removeUsersListDiv();
-        console.log("Selected: " + mention, this.currentMention);
-        this.field.value = this.field.value.replace("@" + this.currentMention, "@" + mention);
+        var replaceRegex = new RegExp("(@" + this.currentMention + " )|(@" + this.currentMention + "$)", "g");
+        this.field.value = this.field.value.replace(replaceRegex, "@" + mention + " ");
         this.field.focus();
       }
     }]);
@@ -245,7 +245,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         settup[name] = value;
       });
 
-      var userMentions = new UserMentions(settup, el);
+      new UserMentions(settup, el);
     });
   }, false);
 })(_.runInContext());
